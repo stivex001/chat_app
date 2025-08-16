@@ -17,7 +17,6 @@ export const MobileHeader = ({ handleScrollTo, activeSection }: Props) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const toggleDropdown = () => setIsDropdownOpen(prev => !prev);
   const closeDropdown = () => setIsDropdownOpen(false);
 
