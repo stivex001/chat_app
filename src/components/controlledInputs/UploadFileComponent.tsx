@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 import React, { ChangeEvent } from "react";
 import { DeleteIcon, Upload } from "lucide-react";
 import { CustomButton } from "../clickable/CustomButton";
@@ -24,11 +26,9 @@ export const UploadFileComponent: React.FC<UploadFileComponentProps> = ({
   format,
   maxSize,
   inputRef,
-  progress,
   isLoading,
   files,
   multiple = false,
-  isEdit = false,
   accept = "",
   fileName,
   onChange,

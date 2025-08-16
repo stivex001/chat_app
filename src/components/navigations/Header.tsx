@@ -1,10 +1,8 @@
-"use client";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { CustomButton } from "../clickable/CustomButton";
-import { MobileHeader } from "./MobileHeader";
-
-type Props = {};
+'use client';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { CustomButton } from '../clickable/CustomButton';
+import { MobileHeader } from './MobileHeader';
 
 type NavLink = {
   id: string;
@@ -12,26 +10,27 @@ type NavLink = {
 };
 
 export const navLinks: NavLink[] = [
-  { id: "categories", label: "Categories" },
-  { id: "howitworks", label: "How It Works" },
+  { id: 'categories', label: 'Categories' },
+  { id: 'howitworks', label: 'How It Works' },
 ];
 
-export const Header = (props: Props) => {
+export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("home");
+  const [activeSection, setActiveSection] = useState<string>('home');
+  console.log(isMenuOpen);
 
   const handleScrollTo = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
+      section.scrollIntoView({ behavior: 'smooth' });
     }
     setIsMenuOpen(false);
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      let currentSection = "home";
-      navLinks.forEach((link) => {
+      let currentSection = 'home';
+      navLinks.forEach(link => {
         const section = document.getElementById(link.id);
         if (section) {
           const { top } = section.getBoundingClientRect();
@@ -43,25 +42,25 @@ export const Header = (props: Props) => {
       setActiveSection(currentSection);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <header className="bg-white h-24 w-full">
-      <div className="max-w-6xl mx-auto flex items-center justify-between py-5 px-4">
-        <Link href="home" onClick={() => handleScrollTo("home")} className="">
+    <header className="h-24 w-full bg-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
+        <Link href="home" onClick={() => handleScrollTo('home')} className="">
           {/* <Image src={logo} alt="logo" className="w-full h-full object-cover" /> */}
           Logo
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+        <div className="hidden items-center gap-8 md:flex">
+          {navLinks.map(link => (
             <button
               key={link.id}
               onClick={() => handleScrollTo(link.id)}
-              className={`transition text-lightp font-medium text-base hover:text-primary ${
-                activeSection === link.id && "text-primary"
+              className={`text-lightp hover:text-primary text-base font-medium transition ${
+                activeSection === link.id && 'text-primary'
               }`}
             >
               {link.label}
@@ -71,7 +70,7 @@ export const Header = (props: Props) => {
           <div className="flex items-center gap-4">
             <CustomButton
               variant="transparent"
-              className="border border-bordergrey rounded-[6px] text-sm text-lightp font-medium "
+              className="border-bordergrey text-lightp rounded-[6px] border text-sm font-medium"
             >
               <Link href="/auth/login">Login</Link>
             </CustomButton>

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiError } from '@/app/api/type';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';

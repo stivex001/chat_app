@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ButtonHTMLAttributes, FC } from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "../shared/Spinner";

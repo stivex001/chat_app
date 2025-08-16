@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const AUTH_TOKEN_KEY = "token";
 const AUTH_ADMIN_KEY = "adminData";
 

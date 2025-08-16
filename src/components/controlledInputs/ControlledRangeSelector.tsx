@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import React from "react";
-import { useController, Control } from "react-hook-form";
-import { cn } from "../../lib/utils";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import React from 'react';
+import { useController, Control } from 'react-hook-form';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 type ControlledInputProps = {
   name: string;
@@ -19,7 +18,7 @@ type ControlledInputProps = {
   labelClassName?: string;
   minLength?: number;
   maxLength?: number;
-  variant?: "primary" | "secondary" | "tertiary" | "normal";
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'normal';
 } & React.ComponentProps<typeof Input>;
 
 const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
@@ -27,54 +26,35 @@ const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
   name,
   control,
   rules,
-  placeholder = "",
-  type = "text",
+  placeholder = '',
+  type = 'text',
   desc,
-  variant = "primary",
-  className,
   labelClassName,
-  maxLength = "0",
-  minLength = "200",
+  maxLength = '0',
+  minLength = '200',
 
   ...props
 }) => {
   const {
     field: { onChange, onBlur, value, ref },
-    fieldState: { error, invalid },
+    fieldState: { error },
   } = useController({
     name,
     control,
     rules,
   });
 
-  const baseStyles =
-    "w-full text-[#98A2B3] py-3 px-4 placeholder:text-[#98A2B3] border rounded-[10px] outline-none ";
-  const styles = {
-    normal: "border-white bg-white h-14 text-black ",
-    primary: "border-[#E4E5EA] bg-white ",
-    secondary: "border-bordergray bg-white text-black h-14 ",
-    tertiary:
-      "border border-black text-[#9694A4] focus:border-black focus:ring-green-500",
-    invalid: "border-red-500 focus:border-red-500 focus:ring-red-500",
-  };
-
-  const inputClassName = cn(baseStyles, styles[variant], {
-    [styles.invalid]: invalid,
-  });
-
-
-
   return (
     <div className="space-y-1">
       <Label
         htmlFor={name}
-        className={`text-sm font-medium text-paragrah capitalize ${labelClassName} `}
+        className={`text-paragrah text-sm font-medium capitalize ${labelClassName} `}
       >
         {label}
       </Label>
       {desc && <p className="text-sm text-[#667185]">{desc}</p>}
-      <div className="flex items-center gap-5 mt-2">
-        <div className="flex-1 ">
+      <div className="mt-2 flex items-center gap-5">
+        <div className="flex-1">
           <input
             id={name}
             name={name}
@@ -86,7 +66,7 @@ const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
             onBlur={onBlur}
             value={value}
             ref={ref}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            className="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
             {...props}
             style={{
               background: `linear-gradient(to right, #1129A0 0%, #1129A0 ${
@@ -97,7 +77,7 @@ const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
             }}
           />
         </div>
-        <span className="text-base font-semibold text-gray-900 min-w-[60px]">
+        <span className="min-w-[60px] text-base font-semibold text-gray-900">
           {value}m
         </span>
       </div>
@@ -114,7 +94,7 @@ const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
           border-radius: 50%;
           background: #ffffff;
           cursor: pointer;
-          border: 2px solid #1129A0;
+          border: 2px solid #1129a0;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
@@ -122,7 +102,7 @@ const ControlledRangeSelector: React.FC<ControlledInputProps> = ({
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #1129A0;
+          background: #1129a0;
           cursor: pointer;
           border: 2px solid white;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);

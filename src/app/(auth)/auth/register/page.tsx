@@ -1,11 +1,5 @@
-import React from 'react'
+const Register = () => {
+  return <div>Register</div>;
+};
 
-type Props = {}
-
-const Register = (props: Props) => {
-  return (
-    <div>Register</div>
-  )
-}
-
-export default Register
+export default Register;

@@ -8,7 +8,7 @@ type Props = {
 
 const CardWrapper = ({children}: Props) => {
   return (
-    <Card>CardWrapper</Card>
+    <Card>{children}</Card>
   )
 }
 

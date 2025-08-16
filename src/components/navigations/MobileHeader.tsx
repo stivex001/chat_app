@@ -2,7 +2,7 @@
 
 import { CustomButton } from '../clickable/CustomButton';
 import { navLinks } from './Header';
-import { JSX, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCloseIcon } from 'lucide-react';

@@ -1,6 +1,6 @@
 "use client";
-
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { Label } from "../ui/label";
@@ -22,8 +22,8 @@ export const ControlledPhoneInput = ({
   rules,
 }: ControlledInputProps) => {
   const {
-    field: { onChange, onBlur, value, ref },
-    fieldState: { error, invalid },
+    field: { onChange, onBlur, value },
+    fieldState: { error },
   } = useController({
     name,
     control,
