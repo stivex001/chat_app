@@ -1,5 +1,4 @@
 'use client';
-
 import { CustomButton } from '../clickable/CustomButton';
 import { navLinks } from './Header';
 import { useEffect, useRef, useState } from 'react';
