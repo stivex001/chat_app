@@ -7,7 +7,7 @@ type Props = {};
 
 export const ChatBox = (props: Props) => {
   return (
-    <div className="flex-2 border-r border-l border-gray-500/50">
+    <div className="flex-2 flex flex-col border-r border-l border-gray-500/50">
       <ChatTop />
       <ChatCenter />
       <ChatBottom />

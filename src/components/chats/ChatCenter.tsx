@@ -4,7 +4,7 @@ type Props = {}
 
 export const ChatCenter = (props: Props) => {
   return (
-    <div>ChatCenter</div>
+    <div className='flex-1'>ChatCenter</div>
   )
 }
 
