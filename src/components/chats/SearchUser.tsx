@@ -1,15 +1,18 @@
-"use client"
-import React, { useState } from "react";
-import { SearchIcon } from "../assets/icons/SvgIcons";
-import { Plus, Minus } from "lucide-react";
+'use client';
+import React, { useState } from 'react';
+import { SearchIcon } from '../assets/icons/SvgIcons';
+import { Plus, Minus } from 'lucide-react';
+import AddUser from './AddUser';
 
 type Props = {};
 
 export const SearchUser = (props: Props) => {
   const [isAdded, setIsAdded] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleToggle = () => {
-    setIsAdded((prev) => !prev);
+    setModalOpen(true);
+    setIsAdded(prev => !prev);
   };
 
   return (
@@ -24,10 +27,11 @@ export const SearchUser = (props: Props) => {
       </div>
       <button
         onClick={handleToggle}
-        className="flex h-7 w-7 items-center justify-center bg-black/60 rounded-[10px] cursor-pointer"
+        className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-[10px] bg-black/60"
       >
         {isAdded ? <Minus /> : <Plus />}
       </button>
+      <AddUser isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   );
 };
