@@ -8,12 +8,19 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { CustomButton } from '@/components/clickable/CustomButton';
 import Link from 'next/link';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthStore } from '@/store/authStore';
 import { AuthUser } from '@/app/api/type';
-import { useAuth } from '../../../api/crud/auth';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 const fields: Field[] = [
+  {
+    name: 'username',
+    type: 'text',
+    errorMessage: 'Email is required',
+    isRequired: true,
+  },
   {
     name: 'email',
     type: 'email',
@@ -42,8 +49,9 @@ const ClientSignUp = () => {
   const password = watch('password');
   const confirmPassword = watch('confirmPassword');
   const { isValid } = formState;
-  const { registerUser } = useAuth();
-  const { isPending, mutateAsync } = registerUser;
+
+  const { register } = useFirebaseAuth();
+  const { isPending, mutateAsync } = register;
 
   useEffect(() => {
     if (confirmPassword) {
@@ -68,17 +76,32 @@ const ClientSignUp = () => {
     try {
       await mutateAsync(payload, {
         onSuccess: (response: any) => {
-          toast.success(response?.message);
+          console.log(response, 'res-Time');
+          setDoc(doc(db, 'users', response?.user?.uid), {
+            name: data.username,
+            email: data.email,
+            id: response?.user?.uid,
+            blocked: [],
+          });
+
+          setDoc(doc(db, 'userChats', response?.user?.uid), {
+            chats: [],
+          });
+          toast.success('Registration successful!');
+
+          // router.push('/auth/login');
+
           const token = response?.user?.token;
           if (token) setAccessToken(token);
-          router.push(`/`);
+          // router.push(`/`);
         },
         onError: (error: any) => {
+          console.log('Registrationerror: ', error?.FirebaseError);
           toast.error(error?.data?.error);
         },
       });
     } catch (error: any) {
-      console.log('An error occurred ', error?.data?.error);
+      console.log('An error occurred ', error);
     }
   };
 
@@ -87,6 +110,14 @@ const ClientSignUp = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-5">
           <div className="flex w-full flex-col gap-5">
+            <ControlledInput
+              name="username"
+              control={control}
+              type="text"
+              label="Username"
+              variant="primary"
+              rules={{ required: true }}
+            />
             <ControlledInput
               name="email"
               control={control}
@@ -109,7 +140,7 @@ const ClientSignUp = () => {
                 },
               }}
             />
-         
+
             <ControlledInput
               name="confirmPassword"
               control={control}
@@ -125,7 +156,7 @@ const ClientSignUp = () => {
             disabled={!isValid}
             isLoading={isPending}
             label="Create My Account"
-            className="w-full rounded-[10px]"
+            className="w-full rounded-[10px] cursor-pointer"
             variant="primary"
           />
 
