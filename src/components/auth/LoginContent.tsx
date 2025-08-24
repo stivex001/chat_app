@@ -4,7 +4,7 @@ import { CustomButton } from '@/components/clickable/CustomButton';
 import useDynamicForm from '@/hooks/useDynamicForm';
 import { Field } from '@/schemas/dynamicSchema';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -13,6 +13,9 @@ import ControlledInput from '../controlledInputs/ControlledInput';
 import { useAuth } from '../../../api/crud/auth';
 import AuthLayout from './AuthLayout';
 import { AuthTitle } from './AuthTitle';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const fields: Field[] = [
   {
@@ -40,10 +43,9 @@ const LoginContent = () => {
   const { setAccessToken, accessToken, setCurrentUser, currentUser } =
     useAuthStore();
 
-  const { loginUser } = useAuth();
-  const { isPending, mutateAsync } = loginUser;
+  const { login } = useFirebaseAuth();
+  const { isPending, mutateAsync } = login;
 
-  // If already logged in and no redirect param, send them to role dashboard
   useEffect(() => {
     if (accessToken && currentUser && !redirect) {
       router.push('/');
@@ -52,32 +54,41 @@ const LoginContent = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      await mutateAsync(data, {
-        onSuccess: (response: any) => {
-          const token = response?.token;
-          const user = response?.user;
-
-          if (token && user) {
-            setAccessToken(token);
-            setCurrentUser(user);
-            toast.success(response?.message);
-
-            if (redirect) {
-              router.push(redirect);
-            } else {
-              router.push('/');
-            }
-          } else {
-            toast.error('Invalid login response.');
-          }
-        },
-        onError: (error: any) => {
-          console.log(error, 'error_logging');
-          toast.error(error?.data?.error || 'Login failed');
-        },
+      const response = await mutateAsync({
+        email: data.email,
+        password: data.password,
       });
-    } catch (error) {
-      console.log('An error occurred: ', error);
+
+      const token = response?.user?.accessToken;
+      const user = response?.user;
+
+      if (token) {
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setCurrentUser({
+            ...currentUser,
+            ...docSnap.data(),
+            id: user.uid,
+          } as any);
+          setAccessToken(token);
+          toast.success('Login successful');
+
+          if (redirect) {
+            router.push(redirect);
+          } else {
+            router.push('/');
+          }
+        } else {
+          toast.error('No user profile found in Firestore');
+        }
+      } else {
+        toast.error('Invalid login response');
+      }
+    } catch (error: any) {
+      console.error('Login error: ', error);
+      toast.error(error?.message || 'Login failed');
     }
   };
 

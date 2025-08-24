@@ -12,7 +12,7 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   const publicRoutes = [
-    '/',
+  
     '/auth/login',
     '/admin-auth/login',
     '/admin-auth/verify-account',

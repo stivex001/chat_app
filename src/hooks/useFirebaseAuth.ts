@@ -1,6 +1,5 @@
-// hooks/useFirebaseAuth.ts
-import { useMutation } from "@tanstack/react-query";
-import { registerUser } from "../../api/crud/firebaseAuth";
+import { useMutation } from '@tanstack/react-query';
+import { loginUser, registerUser } from '../../api/crud/firebaseAuth';
 
 export const useFirebaseAuth = () => {
   const register = useMutation({
@@ -9,5 +8,11 @@ export const useFirebaseAuth = () => {
     },
   });
 
-  return { register };
+  const login = useMutation({
+    mutationFn: async (payload: { email: string; password: string }) => {
+      return await loginUser(payload.email, payload.password);
+    },
+  });
+
+  return { register, login };
 };
