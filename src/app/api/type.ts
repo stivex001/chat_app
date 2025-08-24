@@ -26,6 +26,7 @@ export interface AuthUser {
   id: ID;
   createdAt?: string;
   firstName: string;
+  name: string;
   lastName: string;
   gender: string;
   email: string;

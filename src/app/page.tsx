@@ -3,13 +3,12 @@ import { ChatBox } from '@/components/chats/ChatBox';
 import { ChatList } from '@/components/chats/ChatList';
 import { ChatSettings } from '@/components/chats/ChatSettings';
 import { auth } from '@/lib/firebase';
-import { useAuthStore } from '@/store/authStore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect } from 'react';
 
 export default function Home() {
 
-  const {currentUser} = useAuthStore();
+ 
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, user => {
