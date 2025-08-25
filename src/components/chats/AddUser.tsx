@@ -1,6 +1,9 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { BaseModal } from "../shared/BaseModal";
+'use client';
+import React, { useState } from 'react';
+import { BaseModal } from '../shared/BaseModal';
+import { collection, where, query, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Spinner } from '../shared/Spinner';
 
 type Props = {
   isOpen: boolean;
@@ -8,35 +11,45 @@ type Props = {
 };
 
 type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  avatar: string;
+  id: string;
+  username: string;
+  avatar?: string;
 };
 
-const mockUsers: User[] = [
-  { id: 1, firstName: "John", lastName: "Doe", avatar: "https://i.pravatar.cc/150?img=1" },
-  { id: 2, firstName: "Jane", lastName: "Smith", avatar: "https://i.pravatar.cc/150?img=2" },
-  { id: 3, firstName: "Michael", lastName: "Brown", avatar: "https://i.pravatar.cc/150?img=3" },
-];
-
 const AddUser = ({ isOpen, onClose }: Props) => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<User[]>([]);
+  const [searchUser, setSearchUser] = useState<User | null | 'notfound'>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      return;
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const username = formData.get('username')?.toString().trim();
+
+    if (!username) return;
+
+    setLoading(true);
+    try {
+      const userRef = collection(db, 'users');
+      const q = query(userRef, where('username', '==', username));
+      const querySnapShot = await getDocs(q);
+
+      if (!querySnapShot.empty) {
+        setSearchUser({
+          id: querySnapShot.docs[0].id,
+          ...(querySnapShot.docs[0].data() as Omit<User, 'id'>),
+        });
+      } else {
+        setSearchUser('notfound');
+      }
+    } catch (err) {
+      console.error('Error fetching users: ', err);
+    } finally {
+      setLoading(false);
     }
-    const filtered = mockUsers.filter((user) =>
-      `${user.firstName} ${user.lastName}`.toLowerCase().includes(query.toLowerCase())
-    );
-    setResults(filtered);
-  }, [query]);
+  };
 
   const handleAddUser = (user: User) => {
-    console.log("User added:", user);
+    console.log('User added:', user);
     // integrate with backend or state logic
   };
 
@@ -48,43 +61,47 @@ const AddUser = ({ isOpen, onClose }: Props) => {
       title="Add User"
     >
       <div className="p-4">
-        {/* Search Input */}
-        <div className="flex">
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="flex gap-2">
           <input
+            name="username"
             type="text"
             placeholder="Search user..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
             className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
+          <button
+            type="submit"
+            className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          >
+            {loading ? <Spinner /> : 'Search'}
+          </button>
+        </form>
 
         {/* Search Results */}
         <div className="mt-4 space-y-3">
-          {results.length > 0 ? (
-            results.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center justify-between rounded-lg border p-2"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white">
-                    {user.firstName.charAt(0)}
-                    {user.lastName.charAt(0)}
-                  </div>
-                  <span className="text-sm font-medium">
-                    {user.firstName} {user.lastName}
-                  </span>
+          {loading ? (
+            <p className="text-sm text-gray-500">Searching...</p>
+          ) : searchUser && searchUser !== 'notfound' ? (
+            <div
+              key={searchUser.id}
+              className="flex items-center justify-between rounded-lg border p-2"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white">
+                  {searchUser?.username?.charAt(0)}
                 </div>
-                <button
-                  onClick={() => handleAddUser(user)}
-                  className="cursor-pointer rounded-lg bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700"
-                >
-                  Add
-                </button>
+                <span className="text-sm font-medium">
+                  {searchUser?.username}
+                </span>
               </div>
-            ))
-          ) : query ? (
+              <button
+                onClick={() => handleAddUser(searchUser)}
+                className="cursor-pointer rounded-lg bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700"
+              >
+                Add
+              </button>
+            </div>
+          ) : searchUser === 'notfound' ? (
             <p className="text-sm text-gray-500">No users found</p>
           ) : null}
         </div>

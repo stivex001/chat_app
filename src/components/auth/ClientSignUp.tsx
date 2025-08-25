@@ -89,11 +89,7 @@ const ClientSignUp = () => {
           });
           toast.success('Registration successful!');
 
-          // router.push('/auth/login');
-
-          const token = response?.user?.token;
-          if (token) setAccessToken(token);
-          // router.push(`/`);
+          router.push('/auth/login');
         },
         onError: (error: any) => {
           console.log('Registrationerror: ', error?.FirebaseError);
@@ -156,7 +152,7 @@ const ClientSignUp = () => {
             disabled={!isValid}
             isLoading={isPending}
             label="Create My Account"
-            className="w-full rounded-[10px] cursor-pointer"
+            className="w-full cursor-pointer rounded-[10px]"
             variant="primary"
           />
 

@@ -3,6 +3,7 @@ import { ChevronDown, Download } from 'lucide-react';
 import Image from 'next/image';
 import { auth } from '@/lib/firebase';
 import { useAuthStore } from '@/store/authStore';
+import { toast } from 'sonner';
 
 type Props = {};
 
@@ -16,6 +17,7 @@ export const ChatSettings = (props: Props) => {
 
   const handleLogout = () => {
     auth.signOut().then(() => {
+      toast.success('Logged out successfully');
       logout();
     });
   }
