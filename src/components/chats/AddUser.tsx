@@ -1,7 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { BaseModal } from '../shared/BaseModal';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+  serverTimestamp,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Spinner } from '../shared/Spinner';
 import { useAuthStore } from '@/store/authStore';
@@ -27,7 +37,7 @@ const AddUser = ({ isOpen, onClose }: Props) => {
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchUsers(searchTerm);
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [searchTerm]);
@@ -69,9 +79,39 @@ const AddUser = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  const handleAddUser = (user: User) => {
-    console.log('User added:', user);
-    // integrate with backend or state logic
+  const handleAddUser = async (user: User) => {
+    const chatRef = collection(db, 'chats');
+    const userChatsRef = collection(db, 'userChats');
+
+    try {
+      const newChatRef = doc(chatRef);
+      await setDoc(newChatRef, {
+        createdAt: serverTimestamp(),
+        messages: [],
+      });
+
+      await updateDoc(doc(userChatsRef, user?.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          lastMessage: '',
+          receiverId: currentUser?.id,
+          updatedAt: Date.now(),
+        }),
+      });
+
+      await updateDoc(doc(userChatsRef, currentUser?.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          lastMessage: '',
+          receiverId: user?.id,
+          updatedAt: Date.now(),
+        }),
+      });
+
+      onClose();
+    } catch (error) {
+      console.error('Error adding user: ', error);
+    }
   };
 
   return (

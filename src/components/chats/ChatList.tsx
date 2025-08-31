@@ -47,7 +47,7 @@ export const ChatList = (props: Props) => {
           <p className="mt-5 text-center text-gray-500">No chats available</p>
         ) : (
           chats?.map(chat => {
-            return <UserList key={chat?.chatId} />;
+            return <UserList key={chat?.chatId} chat={chat} />;
           })
         )}
       </div>
