@@ -2,6 +2,7 @@ import Image from 'next/image';
 import React from 'react';
 import avater from '@/components/assets/images/avater.jpg';
 import { formatTime } from '@/lib/formatTime';
+import { useChatStore } from '@/store/chatStore';
 
 type Props = {
   chat: any;
@@ -9,6 +10,10 @@ type Props = {
 
 export const UserList = ({ chat }: Props) => {
   console.log(chat, 'chatss');
+  const {changeChat} = useChatStore()
+
+ 
+
   return (
     <div className="flex items-center justify-between border-b border-gray-500/50 p-5">
       <div className="flex items-center gap-5">

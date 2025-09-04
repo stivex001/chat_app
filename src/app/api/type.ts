@@ -23,7 +23,7 @@ export interface ApiOptions extends Omit<AxiosRequestConfig, 'url' | 'method'> {
 export type ID = string | number;
 
 export interface AuthUser {
-  id: any;
+  id: string | number | any;
   createdAt?: string;
   firstName: string;
   name: string;
@@ -34,4 +34,5 @@ export interface AuthUser {
   password: string;
   confirmPassword: string;
   accessToken: string;
+  blocked:any
 }

@@ -7,12 +7,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect } from 'react';
 
 export default function Home() {
-
- 
-
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, user => {
-      console.log(user, "user__ss");
+      console.log(user, 'user__ss');
     });
 
     return () => unSub();

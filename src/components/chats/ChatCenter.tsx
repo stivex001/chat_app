@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Messages } from './Messages';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useChatStore } from '@/store/chatStore';
 
 const mockMessages = [
   {
@@ -31,12 +32,14 @@ export const ChatCenter = () => {
   const endRef = useRef<HTMLDivElement>(null);
   const [chats, setChats] = useState<any[]>([]);
 
+  const {chatId} = useChatStore()
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
-    const unSub = onSnapshot(doc(db, 'chats', 'NWLE20U1iicAxQ2Nrg9q'), res => {
+    const unSub = onSnapshot(doc(db, 'chats', `${chatId}`), res => {
       const data = res?.data();
       setChats(Array.isArray(data?.messages) ? data.messages : []);
     });
@@ -44,7 +47,7 @@ export const ChatCenter = () => {
     return () => {
       unSub();
     };
-  }, []);
+  }, [chatId]);
 
   return (
     <div className="no-scrollbar flex flex-1 flex-col gap-5 overflow-y-scroll p-5">
